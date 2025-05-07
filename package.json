@@ -1,0 +1,17 @@
+{
+    "name": "bg-remover-app",
+    "version": "1.0.0",
+    "description": "Application to remove bg",
+    "scripts": {
+        "docs": "jsdoc -c jsdoc.config.json",
+        "docs:server": "cd server && npm run docs",
+        "docs:client": "cd client && npm run docs",
+        "docs:all": "npm run docs:server && npm run docs:client && npm run docs"
+    },
+    "devDependencies": {
+        "better-docs": "^2.7.3",
+        "clean-jsdoc-theme": "^4.2.13",
+        "docdash": "^2.0.2",
+        "jsdoc": "^4.0.4"
+    }
+}
