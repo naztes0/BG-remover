@@ -18,7 +18,7 @@
         "excludePattern": "(node_modules/|server/node_modules/|client/node_modules/|dist/|build/|coverage/|docs/)"
     },
     "opts": {
-        "template": "node_modules/clean-jsdoc-theme",
+        "template": "node_modules/docdash",
         "destination": "./docs/",
         "recurse": true,
         "readme": "./README.md"
@@ -29,9 +29,11 @@
     "templates": {
         "cleverLinks": false,
         "monospaceLinks": false,
-        "clean-jsdoc-theme": {
-            "theme": "light",
-            "title": "BG Remover Docs"
+        "docdash": {
+            "static": true,
+            "sort": true,
+            "search": true,
+            "collapse": false
         }
     },
     "markdown": {
