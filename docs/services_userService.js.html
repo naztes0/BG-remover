@@ -1,4 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>services/userService.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
 
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-configs_appConfig.html">configs/appConfig</a></li><li><a href="module-configs_mongodb.html">configs/mongodb</a><ul class='methods'><li data-type='method'><a href="module-configs_mongodb.html#~connectDB">connectDB</a></li></ul></li><li><a href="module-models_userModel.html">models/userModel</a></li><li><a href="module-services_userService.html">services/userService</a><ul class='methods'><li data-type='method'><a href="module-services_userService.html#~checkAndUpdateCredits">checkAndUpdateCredits</a></li><li data-type='method'><a href="module-services_userService.html#~createUser">createUser</a></li><li data-type='method'><a href="module-services_userService.html#~deleteUser">deleteUser</a></li><li data-type='method'><a href="module-services_userService.html#~findUserByClerkId">findUserByClerkId</a></li><li data-type='method'><a href="module-services_userService.html#~manageCreditTimer">manageCreditTimer</a></li><li data-type='method'><a href="module-services_userService.html#~updateUser">updateUser</a></li></ul></li></ul><h3>Events</h3><ul><li><a href="mongoose.html#event:connected">connected</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">services/userService.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
 /**
  * @module services/userService
  * @requires models/userModel
@@ -15,7 +62,7 @@ import config from "../configs/appConfig.js";
  * @property {number} refreshTimer - Credit refill interval in ms
  */
 
-/** @type {Object} */
+/** @type {CreditConfig} */
 const creditConfig = config.credits;
 
 /** @constant {number} */
@@ -31,7 +78,7 @@ export const CREDIT_REFRESH_TIME = creditConfig.refreshTimer;
  * @async
  * @function findUserByClerkId
  * @param {string} clerkId - The Clerk authentication ID to search for
- * @returns {Promise<Object|null>} User document or null if not found
+ * @returns {Promise&lt;Object|null>} User document or null if not found
  * 
  * @example
  * const user = await findUserByClerkId('clerk_123456');
@@ -49,7 +96,7 @@ export const findUserByClerkId = async (clerkId) => {
  * @async
  * @function createUser
  * @param {CreateUserData} userData - User data for creation
- * @returns {Promise<Object>} Created user document
+ * @returns {Promise&lt;Object>} Created user document
  * 
  * @example
  * const newUser = await createUser({
@@ -71,7 +118,7 @@ export const createUser = async (userData) => {
  * @function updateUser
  * @param {string} clerkId - Clerk ID of user to update
  * @param {UpdateUserData} userData - New user data
- * @returns {Promise<Object|null>} Updated user document
+ * @returns {Promise&lt;Object|null>} Updated user document
  * 
  * @example
  * const updatedUser = await updateUser('clerk_123456', {
@@ -90,7 +137,7 @@ export const updateUser = async (clerkId, userData) => {
  * @async
  * @function deleteUser
  * @param {string} clerkId - Clerk ID of user to delete
- * @returns {Promise<Object|null>} Deleted user document
+ * @returns {Promise&lt;Object|null>} Deleted user document
  * 
  * @example
  * const deletedUser = await deleteUser('clerk_123456');
@@ -108,7 +155,7 @@ export const deleteUser = async (clerkId) => {
  * @async
  * @function checkAndUpdateCredits
  * @param {Object} user - User document
- * @returns {Promise<Object>} Updated credit information
+ * @returns {Promise&lt;CreditInfo>} Updated credit information
  * 
  * @description This function:
  * - Checks if user has maximum credits and disables timer if so
@@ -139,7 +186,7 @@ export const checkAndUpdateCredits = async (user) => {
     }
 
     // Check if it's time to add credits
-    if (user.timerActive && user.nextCreditAt && new Date() >= new Date(user.nextCreditAt)) {
+    if (user.timerActive &amp;&amp; user.nextCreditAt &amp;&amp; new Date() >= new Date(user.nextCreditAt)) {
         // Calculate how many credits to add based on elapsed time
         const timePassedSinceLastUpdate = new Date() - new Date(user.lastCreditUpdate);
         const minutesPassedSinceLastUpdate = timePassedSinceLastUpdate / (1000 * 60);
@@ -167,7 +214,7 @@ export const checkAndUpdateCredits = async (user) => {
 
     // Calculate remaining time if timer is active
     let timeRemaining = null;
-    if (user.timerActive && user.nextCreditAt) {
+    if (user.timerActive &amp;&amp; user.nextCreditAt) {
         timeRemaining = Math.max(0, new Date(user.nextCreditAt) - new Date());
     }
 
@@ -186,7 +233,7 @@ export const checkAndUpdateCredits = async (user) => {
  * @async
  * @function manageCreditTimer
  * @param {Object} user - User document
- * @returns {Promise<TimerResult>} Timer management result
+ * @returns {Promise&lt;TimerResult>} Timer management result
  * 
  * @description This function:
  * - Disables timer if user has maximum credits
@@ -216,7 +263,7 @@ export const manageCreditTimer = async (user) => {
     }
 
     // Activate the timer if it's turned off and user has less than max credits
-    if (user.creditBalance < MAX_CREDITS && !user.timerActive) {
+    if (user.creditBalance &lt; MAX_CREDITS &amp;&amp; !user.timerActive) {
         // Set time for next credit
         user.nextCreditAt = new Date(new Date().getTime() + CREDIT_REFRESH_TIME * 60 * 1000);
         user.timerActive = true;
@@ -241,3 +288,28 @@ export const manageCreditTimer = async (user) => {
         creditBalance: user.creditBalance
     };
 };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Mon May 26 2025 01:16:44 GMT+0300 (Eastern European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
