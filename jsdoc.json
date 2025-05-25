@@ -1,0 +1,40 @@
+{
+    "source": {
+        "include": [
+            "./server/",
+            "./client/src/"
+        ],
+        "includePattern": "\\.(js|jsx)$",
+        "exclude": [
+            "node_modules/",
+            "server/node_modules/",
+            "client/node_modules/",
+            "dist/",
+            "build/",
+            "coverage/",
+            "docs/",
+            "client/node_modules/"
+        ],
+        "excludePattern": "(node_modules/|server/node_modules/|client/node_modules/|dist/|build/|coverage/|docs/)"
+    },
+    "opts": {
+        "template": "node_modules/clean-jsdoc-theme",
+        "destination": "./docs/",
+        "recurse": true,
+        "readme": "./README.md"
+    },
+    "plugins": [
+        "plugins/markdown"
+    ],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "clean-jsdoc-theme": {
+            "theme": "light",
+            "title": "BG Remover Docs"
+        }
+    },
+    "markdown": {
+        "parser": "gfm"
+    }
+}
