@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-configs_appConfig.html">configs/appConfig</a></li><li><a href="module-configs_mongodb.html">configs/mongodb</a><ul class='methods'><li data-type='method'><a href="module-configs_mongodb.html#~connectDB">connectDB</a></li></ul></li><li><a href="module-controllers_ImageController.html">controllers/ImageController</a><ul class='methods'><li data-type='method'><a href="module-controllers_ImageController.html#~removeBgImage">removeBgImage</a></li></ul></li><li><a href="module-controllers_UserController.html">controllers/UserController</a><ul class='methods'><li data-type='method'><a href="module-controllers_UserController.html#~checkCreditTimer">checkCreditTimer</a></li><li data-type='method'><a href="module-controllers_UserController.html#~clerkWebhooks">clerkWebhooks</a></li><li data-type='method'><a href="module-controllers_UserController.html#~userCredits">userCredits</a></li></ul></li><li><a href="module-middlewares_auth.html">middlewares/auth</a><ul class='methods'><li data-type='method'><a href="module-middlewares_auth.html#~authUser">authUser</a></li></ul></li><li><a href="module-middlewares_multer.html">middlewares/multer</a><ul class='methods'><li data-type='method'><a href="module-middlewares_multer.html#~filename">filename</a></li></ul></li><li><a href="module-models_userModel.html">models/userModel</a></li><li><a href="module-routes_imageRoutes.html">routes/imageRoutes</a></li><li><a href="module-services_imageService.html">services/imageService</a><ul class='methods'><li data-type='method'><a href="module-services_imageService.html#~removeImageBackground">removeImageBackground</a></li></ul></li><li><a href="module-services_userService.html">services/userService</a><ul class='methods'><li data-type='method'><a href="module-services_userService.html#~checkAndUpdateCredits">checkAndUpdateCredits</a></li><li data-type='method'><a href="module-services_userService.html#~createUser">createUser</a></li><li data-type='method'><a href="module-services_userService.html#~deleteUser">deleteUser</a></li><li data-type='method'><a href="module-services_userService.html#~findUserByClerkId">findUserByClerkId</a></li><li data-type='method'><a href="module-services_userService.html#~manageCreditTimer">manageCreditTimer</a></li><li data-type='method'><a href="module-services_userService.html#~updateUser">updateUser</a></li></ul></li></ul><h3>Events</h3><ul><li><a href="mongoose.html#event:connected">connected</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-configs_appConfig.html">configs/appConfig</a></li><li><a href="module-configs_mongodb.html">configs/mongodb</a><ul class='methods'><li data-type='method'><a href="module-configs_mongodb.html#~connectDB">connectDB</a></li></ul></li><li><a href="module-controllers_ImageController.html">controllers/ImageController</a><ul class='methods'><li data-type='method'><a href="module-controllers_ImageController.html#~removeBgImage">removeBgImage</a></li></ul></li><li><a href="module-controllers_UserController.html">controllers/UserController</a><ul class='methods'><li data-type='method'><a href="module-controllers_UserController.html#~checkCreditTimer">checkCreditTimer</a></li><li data-type='method'><a href="module-controllers_UserController.html#~clerkWebhooks">clerkWebhooks</a></li><li data-type='method'><a href="module-controllers_UserController.html#~userCredits">userCredits</a></li></ul></li><li><a href="module-middlewares_auth.html">middlewares/auth</a><ul class='methods'><li data-type='method'><a href="module-middlewares_auth.html#~authUser">authUser</a></li></ul></li><li><a href="module-middlewares_multer.html">middlewares/multer</a><ul class='methods'><li data-type='method'><a href="module-middlewares_multer.html#~filename">filename</a></li></ul></li><li><a href="module-models_userModel.html">models/userModel</a></li><li><a href="module-routes_imageRoutes.html">routes/imageRoutes</a></li><li><a href="module-routes_userRoutes.html">routes/userRoutes</a></li><li><a href="module-services_imageService.html">services/imageService</a><ul class='methods'><li data-type='method'><a href="module-services_imageService.html#~removeImageBackground">removeImageBackground</a></li></ul></li><li><a href="module-services_userService.html">services/userService</a><ul class='methods'><li data-type='method'><a href="module-services_userService.html#~checkAndUpdateCredits">checkAndUpdateCredits</a></li><li data-type='method'><a href="module-services_userService.html#~createUser">createUser</a></li><li data-type='method'><a href="module-services_userService.html#~deleteUser">deleteUser</a></li><li data-type='method'><a href="module-services_userService.html#~findUserByClerkId">findUserByClerkId</a></li><li data-type='method'><a href="module-services_userService.html#~manageCreditTimer">manageCreditTimer</a></li><li data-type='method'><a href="module-services_userService.html#~updateUser">updateUser</a></li></ul></li></ul><h3>Events</h3><ul><li><a href="mongoose.html#event:connected">connected</a></li></ul>
     
 </nav>
 
@@ -65,65 +65,6 @@ import authUser from "../middlewares/auth.js";
 
 const imageRouter = express.Router();
 
-
-/**
- * @description Processes an uploaded image to remove its background using AI-powered ClipDrop API.
- * Requires user authentication and consumes one credit per operation.
- * 
- * @middleware upload.single("image") - Handles single file upload with field name "image"
- * @middleware authUser - Validates JWT token and extracts clerkId
- * @controller removeBgImage - Processes background removal request
- * 
- * @param {Object} request - Express request object
- * @param {Object} request.headers - Request headers
- * @param {string} request.headers.token - JWT authentication token
- * @param {FormData} request.body - Multipart form data
- * @param {File} request.body.image - Image file to process (jpg, png, etc.)
- * 
- * @returns {Object} JSON response with processing result
- * @returns {boolean} returns.success - Operation success status
- * @returns {string} returns.message - Response message
- * @returns {string} [returns.resultImage] - Base64 encoded processed image (on success)
- * @returns {number} [returns.creditBalance] - Updated user credit balance (on success)
- * @returns {boolean} [returns.timerActive] - Credit timer status (on success)
- * @returns {Date} [returns.nextCreditAt] - Next credit refresh time (on success)
- * 
- * @example
- * // Request:
- * // POST /api/image/remove-bg
- * // Headers: { "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
- * // Form Data: { "image": &lt;file> }
- * 
- * // Success Response (200):
- * {
- *   "success": true,
- *   "resultImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
- *   "creditBalance": 4,
- *   "timerActive": true,
- *   "nextCreditAt": "2024-01-15T10:32:00.000Z",
- *   "message": "Background Removed"
- * }
- * 
- * // Error Response - No Credits (200):
- * {
- *   "success": false,
- *   "message": "No credit balance",
- *   "creditBalance": 0
- * }
- * 
- * // Error Response - User Not Found (200):
- * {
- *   "success": false,
- *   "message": "User not found"
- * }
- * 
- * // Error Response - No Token (200):
- * {
- *   "success": false,
- *   "message": "Not authorized login again"
- * }
- * 
- */
 imageRouter.post('/remove-bg', upload.single("image"), authUser, removeBgImage)
 
 export default imageRouter</code></pre>
@@ -140,7 +81,7 @@ export default imageRouter</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Mon May 26 2025 14:47:22 GMT+0300 (Eastern European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Mon May 26 2025 15:19:08 GMT+0300 (Eastern European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

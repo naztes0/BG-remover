@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>routes/userRoutes - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-configs_appConfig.html">configs/appConfig</a></li><li><a href="module-configs_mongodb.html">configs/mongodb</a><ul class='methods'><li data-type='method'><a href="module-configs_mongodb.html#~connectDB">connectDB</a></li></ul></li><li><a href="module-controllers_ImageController.html">controllers/ImageController</a><ul class='methods'><li data-type='method'><a href="module-controllers_ImageController.html#~removeBgImage">removeBgImage</a></li></ul></li><li><a href="module-controllers_UserController.html">controllers/UserController</a><ul class='methods'><li data-type='method'><a href="module-controllers_UserController.html#~checkCreditTimer">checkCreditTimer</a></li><li data-type='method'><a href="module-controllers_UserController.html#~clerkWebhooks">clerkWebhooks</a></li><li data-type='method'><a href="module-controllers_UserController.html#~userCredits">userCredits</a></li></ul></li><li><a href="module-middlewares_auth.html">middlewares/auth</a><ul class='methods'><li data-type='method'><a href="module-middlewares_auth.html#~authUser">authUser</a></li></ul></li><li><a href="module-middlewares_multer.html">middlewares/multer</a><ul class='methods'><li data-type='method'><a href="module-middlewares_multer.html#~filename">filename</a></li></ul></li><li><a href="module-models_userModel.html">models/userModel</a></li><li><a href="module-routes_imageRoutes.html">routes/imageRoutes</a></li><li><a href="module-routes_userRoutes.html">routes/userRoutes</a></li><li><a href="module-services_imageService.html">services/imageService</a><ul class='methods'><li data-type='method'><a href="module-services_imageService.html#~removeImageBackground">removeImageBackground</a></li></ul></li><li><a href="module-services_userService.html">services/userService</a><ul class='methods'><li data-type='method'><a href="module-services_userService.html#~checkAndUpdateCredits">checkAndUpdateCredits</a></li><li data-type='method'><a href="module-services_userService.html#~createUser">createUser</a></li><li data-type='method'><a href="module-services_userService.html#~deleteUser">deleteUser</a></li><li data-type='method'><a href="module-services_userService.html#~findUserByClerkId">findUserByClerkId</a></li><li data-type='method'><a href="module-services_userService.html#~manageCreditTimer">manageCreditTimer</a></li><li data-type='method'><a href="module-services_userService.html#~updateUser">updateUser</a></li></ul></li></ul><h3>Events</h3><ul><li><a href="mongoose.html#event:connected">connected</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">routes/userRoutes</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+            
+        
+        </div>
+    
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:express</li>
+        
+            <li><a href="module-controllers_UserController.html">module:controllers/UserController</a></li>
+        
+            <li><a href="module-middlewares_auth.html">module:middlewares/auth</a></li>
+        </ul>
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="~GET/credits"><span class="type-signature type-signature-inner">(inner) </span>GET /credits<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>This route:</p>
+<ol>
+<li>Authenticates user via JWT token</li>
+<li>Finds user by Clerk ID</li>
+<li>Checks and updates credits based on elapsed time</li>
+<li>Returns current credit balance, timer status, and next credit time</li>
+</ol>
+<p>The system automatically adds credits based on time elapsed since last update.
+Credits refresh every 2 minutes up to a maximum of 5 credits.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="routes_userRoutes.js.html">routes/userRoutes.js</a>, <a href="routes_userRoutes.js.html#line62">line 62</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>This route:</p>
+<ol>
+<li>Authenticates user via JWT token</li>
+<li>Finds user by Clerk ID</li>
+<li>Checks and updates credits based on elapsed time</li>
+<li>Returns current credit balance, timer status, and next credit time</li>
+</ol>
+<p>The system automatically adds credits based on time elapsed since last update.
+Credits refresh every 2 minutes up to a maximum of 5 credits.</p>
+</div>
+
+
+
+
+
+
+
+    <h5 class="h5-examples">Examples</h5>
+    
+    <pre class="prettyprint"><code>// Request// GET /api/user/credits// Headers: { "token": "jwt_token_here" }// Success response:{  "success": true,  "credits": 3,  "timerActive": true,  "nextCreditAt": "2024-01-15T10:30:00Z",  "timeRemaining": 120000}// Response when user has max credits:{  "success": true,  "credits": 5,  "timerActive": false,  "nextCreditAt": null,  "timeRemaining": null}</code></pre>
+
+    <pre class="prettyprint"><code>// Error responses// User not found:{  "success": false,  "message": "User not found"}// Authentication error:{  "success": false,  "message": "Not authorized login again"}</code></pre>
+
+
+
+        
+            
+<h4 class="name" id="~POST/check-timer"><span class="type-signature type-signature-inner">(inner) </span>POST /check-timer<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>This route manages the credit refresh timer:</p>
+<ul>
+<li><strong>Activates timer</strong> if user has &lt; 5 credits and timer is off</li>
+<li><strong>Deactivates timer</strong> if user has 5 credits (maximum)</li>
+<li><strong>Returns status</strong> of timer and credit information</li>
+</ul>
+<p>The timer ensures users receive 1 credit every 2 minutes when below maximum.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="routes_userRoutes.js.html">routes/userRoutes.js</a>, <a href="routes_userRoutes.js.html#line117">line 117</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>This route manages the credit refresh timer:</p>
+<ul>
+<li><strong>Activates timer</strong> if user has &lt; 5 credits and timer is off</li>
+<li><strong>Deactivates timer</strong> if user has 5 credits (maximum)</li>
+<li><strong>Returns status</strong> of timer and credit information</li>
+</ul>
+<p>The timer ensures users receive 1 credit every 2 minutes when below maximum.</p>
+</div>
+
+
+
+
+
+
+
+    <h5 class="h5-examples">Examples</h5>
+    
+    <pre class="prettyprint"><code>// Request// POST /api/user/check-timer// Headers: { "token": "jwt_token_here" }// Success response (timer activated):{  "success": true,  "message": "Timer activated",  "timerActive": true,  "nextCreditAt": "2024-01-15T10:30:00Z",  "creditBalance": 3}// Success response (max credits reached):{  "success": true,  "message": "Max credits reached, timer disabled",  "timerActive": false,  "creditBalance": 5}// Success response (timer already running):{  "success": true,  "message": "Timer status checked",  "timerActive": true,  "nextCreditAt": "2024-01-15T10:25:00Z",  "creditBalance": 2}</code></pre>
+
+    <pre class="prettyprint"><code>// Error responses// User not found:{  "success": false,  "message": "User not found"}// Authentication error:{  "success": false,  "message": "Not authorized login again"}</code></pre>
+
+
+
+        
+            
+<h4 class="name" id="~POST/webhooks"><span class="type-signature type-signature-inner">(inner) </span>POST /webhooks<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>This route processes webhooks from Clerk authentication service:</p>
+<ul>
+<li><strong>user.created</strong>: Creates new user in database with default 5 credits</li>
+<li><strong>user.updated</strong>: Updates existing user information</li>
+<li><strong>user.deleted</strong>: Removes user from database</li>
+</ul>
+<p>The route verifies webhook signatures using Svix for security.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="routes_userRoutes.js.html">routes/userRoutes.js</a>, <a href="routes_userRoutes.js.html#line19">line 19</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>This route processes webhooks from Clerk authentication service:</p>
+<ul>
+<li><strong>user.created</strong>: Creates new user in database with default 5 credits</li>
+<li><strong>user.updated</strong>: Updates existing user information</li>
+<li><strong>user.deleted</strong>: Removes user from database</li>
+</ul>
+<p>The route verifies webhook signatures using Svix for security.</p>
+</div>
+
+
+
+
+
+
+
+    <h5 class="h5-examples">Examples</h5>
+    
+    <pre class="prettyprint"><code>// Clerk sends webhook on user creation:// POST /api/user/webhooks// Headers: {//   "svix-id": "msg_123...",//   "svix-timestamp": "1640995200",//   "svix-signature": "v1,signature_here"// }// Body: {//   "type": "user.created",//   "data": {//     "id": "user_123456",//     "email_addresses": [{"email_address": "user@example.com"}],//     "first_name": "John",//     "last_name": "Doe",//     "profile_image_url": "https://example.com/photo.jpg"//   }// }</code></pre>
+
+    <pre class="prettyprint"><code>// Success response (all webhook types):{}// Error response:{  "success": false,  "message": "Webhook verification failed"}</code></pre>
+
+
+
+        
+            
+<h4 class="name" id="~userRouter"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>userRouter<span class="type-signature"> :express.Router</span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Router handling all user management operations including
+Clerk webhook processing, credit queries, and timer management.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="routes_userRoutes.js.html">routes/userRoutes.js</a>, <a href="routes_userRoutes.js.html#line17">line 17</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Router handling all user management operations including
+Clerk webhook processing, credit queries, and timer management.</p>
+</div>
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">express.Router</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Mon May 26 2025 15:19:08 GMT+0300 (Eastern European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
