@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>configs/appConfig.js - Documentation</title>
+    <title>middlewares/auth.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -35,7 +35,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">configs/appConfig.js</h1>
+    <h1 class="page-title">middlewares/auth.js</h1>
     
 
     
@@ -46,113 +46,94 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @module configs/appConfig
- 
+ * @module middlewares/auth
+ * @requires jsonwebtoken
+ */
+import jwt from 'jsonwebtoken'
+
+/**
+ * JWT token payload structure
+ * @typedef {Object} TokenPayload
+ * @property {string} clerkId - User's Clerk authentication ID
+ * @property {number} [iat] - Token issued at timestamp
+ * @property {number} [exp] - Token expiration timestamp
  */
 
 /**
- * Credit system configuration
- * @typedef {Object} CreditConfig
- * @property {number} max - Maximum number of credits per user
- * @property {number} refreshTimer - Time in minutes between credit refreshes
+ * @callback NextFunction
+ * @param {any} [err] - Optional error parameter
+ * @returns {void}
  */
 
 /**
- * Server configuration
- * @typedef {Object} ServerConfig
- * @property {number} port - Server port number
+ * Authentication middleware to decode JWT token and extract Clerk ID
+ * 
+ * @async
+ * @function authUser
+ * @param {Object} req - Express request object
+ * @param {Object} req.headers - Request headers
+ * @param {string} req.headers.token - JWT token containing user authentication data
+ * @param {Object} req.body - Request body (will be modified to include clerkId)
+ * @param {Object} res - Express response object
+  * @param {NextFunction} next - Express next function
+ * @returns {Promise&lt;void>} Calls next() on success or sends error response
+ * 
+ * @description This middleware function:
+ * 1. Extracts JWT token from request headers
+ * 2. Validates token presence and returns error if missing
+ * 3. Decodes JWT token to extract user information (without verification)
+ * 4. Adds clerkId from token payload to request body
+ * 5. Calls next middleware in chain on successful authentication
+ * 6. Returns unauthorized error if token is missing or invalid
+ * 
+ * @example
+ * // Usage in route definition:
+ * router.get('/protected', authUser, (req, res) => {
+ *   // req.body.clerkId is now available
+ *   console.log('Authenticated user:', req.body.clerkId);
+ * });
+ * 
+ * // Required request header:
+ * {
+ *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ * }
+ * 
+ * // After middleware execution, req.body will contain:
+ * {
+ *   ...originalBody,
+ *   "clerkId": "user_123456789"
+ * }
+ * 
+ * // Error response if token missing:
+ * {
+ *   "success": false,
+ *   "message": "Not authorized login again"
+ * }
+ * 
+ * @security
+ * - Uses jwt.decode() which does NOT verify token signature
+ * - Token validation should be handled by Clerk on frontend
+ * - This middleware only extracts clerkId for internal use
+ * 
+ * @throws {Error} Returns JSON error response if token missing or decoding fails
  */
+//Middleware Function to deocde jwt token to get clerkId
+const authUser = async (req, res, next) => {
+    try {
 
-/**
- * Database configuration
- * @typedef {Object} DatabaseConfig
- * @property {string} uri - MongoDB connection URI
- * @property {string} name - Database name
- * @property {Object} options - MongoDB connection options
- * @property {number} options.serverSelectionTimeoutMS - Server selection timeout
- * @property {number} options.connectTimeoutMS - Connection timeout
- */
+        const { token } = req.headers
+        if (!token) return res.json({ success: false, message: "Not authorized login again" })
+        const token_decode = jwt.decode(token)
+        req.body.clerkId = token_decode.clerkId
+        next()
 
-/**
- * Clerk authentication configuration
- * @typedef {Object} ClerkConfig
- * @property {string} webhookSecret - Webhook secret key for Clerk authentication
- */
-
-/**
- * API keys configuration
- * @typedef {Object} APIKeysConfig
- * @property {string} clipdrop - ClipDrop API key for background removal
- * @property {ClerkConfig} clerk - Clerk configuration object
- */
-
-/**
- * Main application configuration object
- * @typedef {Object} AppConfig
- * @property {CreditConfig} credits - Credit system configuration
- * @property {ServerConfig} server - Server configuration
- * @property {DatabaseConfig} db - Database configuration
- * @property {APIKeysConfig} apiKeys - API keys and authentication configuration
- */
-
-/**
- * Application configuration containing all settings for the BG Remover application
- * @type {AppConfig}
- * @constant
- */
-
-const config = {
-    /**
-    * Credit system configuration
-    * @type {CreditConfig}
-    */
-    credits: {
-        /** Maximum number of credits per user */
-        max: 5,
-        /** Time in minutes between credit refreshes */
-        refreshTimer: 2,
-    },
-    /**
-     * Server configuration
-     * @type {ServerConfig}
-     */
-    server: {
-        port: process.env.PORT || 4000,
-    },
-
-
-    /**
-    * MongoDB database configuration
-    * @type {DatabaseConfig}
-    */
-    db: {
-        /** MongoDB connection URI from environment or localhost default */
-        uri: process.env.MONGODB_URI || 'mongodb://localhost:27017',
-        name: 'bg-removal',
-        options: {
-            /** Server selection timeout in milliseconds */
-            serverSelectionTimeoutMS: 5000,
-            /** Connection timeout in milliseconds */
-            connectTimeoutMS: 5000,
-        },
-    },
-    /**
-     * API keys and authentication configuration
-     * @type {APIKeysConfig}
-     */
-    apiKeys: {
-        /** ClipDrop API key for background removal service */
-        clipdrop: process.env.CLIPDROP_API,
-        clerk: {
-            /** Webhook secret for verifying Clerk webhooks */
-            webhookSecret: process.env.CLERK_WEBHOOK_SECRET,
-        },
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: error.message })
     }
-
 }
 
-export default config;
-</code></pre>
+export default authUser</code></pre>
         </article>
     </section>
 
