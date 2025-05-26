@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>routes/imageRoutes - Documentation</title>
+    <title>server.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -35,149 +35,143 @@
 
 <div id="main">
     
-    <h1 class="page-title">routes/imageRoutes</h1>
+    <h1 class="page-title">server.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module server
+ * @requires dotenv/config
+ * @requires express
+ * @requires cors
+ * @requires configs/mongodb
+ * @requires routes/userRoutes
+ * @requires routes/imageRoutes
+ * @requires configs/appConfig
+ * 
+ */
+import 'dotenv/config'
+import express from 'express'
+import cors from 'cors'
+import connectDB from './configs/mongodb.js'
+import userRouter from './routes/userRoutes.js';
+import imageRouter from './routes/imageRoutes.js';
+import config from './configs/appConfig.js';
 
-<article>
-    
-        <div class="container-overview">
-        
-            
+//App config
 
-            
-        
-        </div>
-    
+/**
+ * Server configuration
+ * 
+ */
 
-    
+/**
+  * Server port number from config (default: 4000)
+ * @type {number}
+ */
+const PORT = config.server.port;
 
-    
-        <h3 class="subsection-title">Requires</h3>
-
-        <ul>
-            <li>module:express</li>
-        
-            <li><a href="module-controllers_ImageController.html">module:controllers/ImageController</a></li>
-        
-            <li><a href="module-middlewares_multer.html">module:middlewares/multer</a></li>
-        
-            <li><a href="module-middlewares_auth.html">module:middlewares/auth</a></li>
-        </ul>
-    
-
-    
-    
-    
-
-     
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id="~imageRouter"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>imageRouter<span class="type-signature"> :express.Router</span></h4>
+/**
+ * Express application instance
+ * @type {express.Application}
+ * @description Main Express app configured with middleware and routes
+ */
+const app = express();
 
 
+/**
+ *  @description Express middleware configuration
+ */
 
+/**
+ * JSON parsing middleware
+ *@description Middleware to parse incoming JSON requests into req.body
+ */
+//Initialize Middlewares
+app.use(express.json())
 
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Express router instance for image-related API endpoints</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="routes_imageRoutes.js.html">routes/imageRoutes.js</a>, <a href="routes_imageRoutes.js.html#line19">line 19</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
+/**
+ * CORS middleware
+ * @function
+ * @description Enables Cross-Origin Resource Sharing for all routes
+ * Allows frontend applications to communicate with the API
+ */
+app.use(cors())
 
 
 
+/**
+ * Health check endpoint
+ * @description Simple health check endpoint to verify server is running
+ * 
+ * @example
+ * // GET /
+ * // Response: "API Working"
+ * 
+ */
+//API routes
+app.get('/', (req, res) => res.send("API Working"))
 
 
-<div class="description usertext">
-    <p>Express router instance for image-related API endpoints</p>
-</div>
+/**
+ * User management routes
+ * @description Mounts user router for all user-related operations:
+ * - POST /api/user/webhooks - Clerk authentication webhooks
+ * - GET /api/user/credits - Get user credit information
+ * - POST /api/user/check-timer - Manage credit refresh timer
+ * 
+ */
+app.use('/api/user', userRouter)
+/**
+ * Image processing routes
+ * @description Mounts image router for all image-related operations:
+ * - POST /api/image/remove-bg - Remove background from uploaded images
+ * 
+ */
+app.use('/api/image', imageRouter)
 
 
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">express.Router</span>
-
-
-
-        </li>
-    </ul>
-
-
+/**
+ * Start Express server
+ * @function
+ * @description Starts the Express server on configured port
+ * Logs success message when server is ready to accept connections
+ * 
+ * @example
+ * // Console output:
+ * // "Server Running on port 4000"
+ */
+app.listen(PORT, () => console.log("Server Running on port " + PORT))
 
 
-
-
-        
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+/**
+ * Initialize database connection
+ * @function
+ * @description Establishes connection to MongoDB database
+ * Handles connection success and failure scenarios
+ * 
+ * @example
+ * // Successful connection console output:
+ * // "Database connected"
+ * 
+ * // Failed connection console output:
+ * // "DB Connection Error: [error details]"
+ */
+connectDB()
+  .then(() => {
+  })
+  .catch(err => {
+    console.error("DB Connection Error:", err);
+  });
+</code></pre>
+        </article>
+    </section>
 
 
 
