@@ -15,7 +15,7 @@ import config from "../configs/appConfig.js";
  * @property {number} refreshTimer - Credit refill interval in ms
  */
 
-/** @type {Object} */
+/** @type {CreditConfig} */
 const creditConfig = config.credits;
 
 /** @constant {number} */
