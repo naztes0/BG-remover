@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>controllers/ImageController.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-configs_appConfig.html">configs/appConfig</a></li><li><a href="module-configs_mongodb.html">configs/mongodb</a><ul class='methods'><li data-type='method'><a href="module-configs_mongodb.html#~connectDB">connectDB</a></li></ul></li><li><a href="module-controllers_ImageController.html">controllers/ImageController</a><ul class='methods'><li data-type='method'><a href="module-controllers_ImageController.html#~removeBgImage">removeBgImage</a></li></ul></li><li><a href="module-controllers_UserController.html">controllers/UserController</a><ul class='methods'><li data-type='method'><a href="module-controllers_UserController.html#~checkCreditTimer">checkCreditTimer</a></li><li data-type='method'><a href="module-controllers_UserController.html#~clerkWebhooks">clerkWebhooks</a></li><li data-type='method'><a href="module-controllers_UserController.html#~userCredits">userCredits</a></li></ul></li><li><a href="module-models_userModel.html">models/userModel</a></li><li><a href="module-services_imageService.html">services/imageService</a><ul class='methods'><li data-type='method'><a href="module-services_imageService.html#~removeImageBackground">removeImageBackground</a></li></ul></li><li><a href="module-services_userService.html">services/userService</a><ul class='methods'><li data-type='method'><a href="module-services_userService.html#~checkAndUpdateCredits">checkAndUpdateCredits</a></li><li data-type='method'><a href="module-services_userService.html#~createUser">createUser</a></li><li data-type='method'><a href="module-services_userService.html#~deleteUser">deleteUser</a></li><li data-type='method'><a href="module-services_userService.html#~findUserByClerkId">findUserByClerkId</a></li><li data-type='method'><a href="module-services_userService.html#~manageCreditTimer">manageCreditTimer</a></li><li data-type='method'><a href="module-services_userService.html#~updateUser">updateUser</a></li></ul></li></ul><h3>Events</h3><ul><li><a href="mongoose.html#event:connected">connected</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">controllers/ImageController.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module controllers/ImageController
+ * @requires services/userService
+ * @requires services/imageService
+ */
+
+import { findUserByClerkId } from "../services/userService.js"
+import { removeImageBackground } from "../services/imageService.js"
+
+
+
+/**
+ * Handles background removal from uploaded images
+ * 
+ * @async
+ * @function removeBgImage
+ * @param {Object} req - Express request object
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.clerkId - User's Clerk authentication ID
+ * @param {Object} req.file - Uploaded file from multer middleware
+ * @param {string} req.file.path - Path to uploaded file
+ * @param {string} req.file.mimetype - MIME type of uploaded file
+ * @param {Object} res - Express response object
+ * @returns {Promise&lt;void>} Sends JSON response with operation result
+ * 
+ * @description This controller function:
+ * 1. Extracts clerkId from authenticated request body
+ * 2. Finds user by Clerk ID and validates existence
+ * 3. Checks if user has sufficient credit balance (> 0)
+ * 4. Sets MIME type from uploaded file to user object
+ * 5. Calls image service to remove background using ClipDrop API
+ * 6. Returns processed image and updated credit information
+ * 7. Handles errors and returns appropriate error messages
+ * 
+ * @example
+ * // POST /api/image/remove-bg
+ * // Headers: { "token": "jwt_token_here" }
+ * // Form data: { "image": file, "clerkId": "clerk_123" }
+ * 
+ * // Success response:
+ * {
+ *   "success": true,
+ *   "resultImage": "data:image/jpeg;base64,/9j/4AAQ...",
+ *   "creditBalance": 4,
+ *   "timerActive": true,
+ *   "nextCreditAt": "2024-01-15T10:30:00Z",
+ *   "message": "Background Removed"
+ * }
+ * 
+ * // Error responses:
+ * {
+ *   "success": false,
+ *   "message": "User not found"
+ * }
+ * 
+ * {
+ *   "success": false,
+ *   "message": "No credit balance",
+ *   "creditBalance": 0
+ * }
+ * 
+ * @throws {Error} Returns error response if user not found, insufficient credits, or processing fails
+ */
+
+/**
+ * Controller response for background removal operation
+ * @typedef {Object} RemoveBgResponse
+ * @property {boolean} success - Operation success status
+ * @property {string} message - Response message
+ * @property {string} [resultImage] - Base64 encoded processed image (on success)
+ * @property {number} [creditBalance] - Updated user credit balance (on success)
+ * @property {boolean} [timerActive] - Credit timer status (on success)
+ * @property {Date} [nextCreditAt] - Next credit refresh time (on success)
+ */
+
+const removeBgImage = async (req, res) => {
+    try {
+        const { clerkId } = req.body
+        const user = await findUserByClerkId(clerkId);
+
+        if (!user) {
+            return res.json({ success: false, message: "User not found" })
+        }
+        if (user.creditBalance === 0) {
+            return res.json({
+                success: false,
+                message: "No credit balance",
+                creditBalance: user.creditBalance
+            })
+        }
+        user.mime = req.file.mimetype;
+        const result = await removeImageBackground(user, req.file.path);
+        res.json({
+            success: true,
+            resultImage: result.resultImage,
+            creditBalance: result.creditBalance,
+            timerActive: result.timerActive,
+            nextCreditAt: result.nextCreditAt,
+            message: "Background Removed"
+        });
+
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+export { removeBgImage }</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Mon May 26 2025 14:15:46 GMT+0300 (Eastern European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
