@@ -34,7 +34,6 @@ const connectDB = async () => {
     try {
         /**
         * Event listener for successful database connection
-        * @event mongoose#connected
         */
         mongoose.connection.on("connected", () => {
             console.log("Database connected");
