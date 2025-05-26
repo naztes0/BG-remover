@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>models/userModel - Documentation</title>
+    <title>middlewares/multer - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -35,7 +35,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">models/userModel</h1>
+    <h1 class="page-title">middlewares/multer</h1>
     
 
     
@@ -68,7 +68,7 @@
         <h3 class="subsection-title">Requires</h3>
 
         <ul>
-            <li>module:mongoose</li>
+            <li>module:multer</li>
         </ul>
     
 
@@ -85,7 +85,7 @@
 
         
             
-<h4 class="name" id="~userModel"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>userModel<span class="type-signature"> :mongoose.Model.&lt;UserDocument></span></h4>
+<h4 class="name" id="~storage"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>storage<span class="type-signature"></span></h4>
 
 
 
@@ -94,14 +94,14 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Mongoose schema definition for User collection.
-Defines the structure and validation rules for user documents in MongoDB.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Creates disk storage configuration for multer middleware.
+Files are stored with timestamp-prefixed filenames to avoid naming conflicts.</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_userModel.js.html">models/userModel.js</a>, <a href="models_userModel.js.html#line70">line 70</a>
+        <a href="middlewares_multer.js.html">middlewares/multer.js</a>, <a href="middlewares_multer.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -141,40 +141,25 @@ Defines the structure and validation rules for user documents in MongoDB.</p></l
 
 
 <div class="description usertext">
-    <p>Mongoose schema definition for User collection.
-Defines the structure and validation rules for user documents in MongoDB.</p>
+    <p>Creates disk storage configuration for multer middleware.
+Files are stored with timestamp-prefixed filenames to avoid naming conflicts.</p>
 </div>
 
 
 
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">mongoose.Model.&lt;UserDocument></span>
-
-
-
-        </li>
-    </ul>
 
 
 
 
-
-    <h5 class="h5-examples">Examples</h5>
+    <h5 class="h5-examples">Example</h5>
     
-    <pre class="prettyprint"><code>// Create a new userconst newUser = new userModel({  clerkId: 'clerk_123',  email: 'user@example.com',  photo: 'https://example.com/photo.jpg',  firstName: 'John',  lastName: 'Doe'});await newUser.save();</code></pre>
-
-    <pre class="prettyprint"><code>// Find user by clerk IDconst user = await userModel.findOne({ clerkId: 'clerk_123' });</code></pre>
-
-    <pre class="prettyprint"><code>// Update user creditsawait userModel.findByIdAndUpdate(userId, {   creditBalance: 4,  timerActive: true });</code></pre>
+    <pre class="prettyprint"><code>// Original filename: "photo.jpg"// Stored filename: "1640995200000_photo.jpg"</code></pre>
 
 
 
         
             
-<h4 class="name" id="~userSchema"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>userSchema<span class="type-signature"> :mongoose.Schema.&lt;UserDocument></span></h4>
+<h4 class="name" id="~upload"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>upload<span class="type-signature"> :multer.Multer</span></h4>
 
 
 
@@ -183,13 +168,14 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Defines the structure and validation rules for user documents in MongoDB</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Multer middleware configured with disk storage.
+Used to handle multipart/form-data requests containing file uploads.</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_userModel.js.html">models/userModel.js</a>, <a href="models_userModel.js.html#line29">line 29</a>
+        <a href="middlewares_multer.js.html">middlewares/multer.js</a>, <a href="middlewares_multer.js.html#line82">line 82</a>
     </li></ul></dd>
     
 
@@ -229,7 +215,8 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
 
 
 <div class="description usertext">
-    <p>Defines the structure and validation rules for user documents in MongoDB</p>
+    <p>Multer middleware configured with disk storage.
+Used to handle multipart/form-data requests containing file uploads.</p>
 </div>
 
 
@@ -238,7 +225,7 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
     <ul>
         <li>
             
-<span class="param-type">mongoose.Schema.&lt;UserDocument></span>
+<span class="param-type">multer.Multer</span>
 
 
 
@@ -249,19 +236,26 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
 
 
 
+    <h5 class="h5-examples">Example</h5>
+    
+    <pre class="prettyprint"><code>// Usage in route for single file upload:router.post('/upload', upload.single('image'), (req, res) => {  console.log('Uploaded file:', req.file);  // req.file contains:  // {  //   fieldname: 'image',  //   originalname: 'photo.jpg',  //   filename: '1640995200000_photo.jpg',  //   path: 'uploads/1640995200000_photo.jpg',  //   size: 124536,  //   mimetype: 'image/jpeg'  // }});// Usage in route for multiple files:router.post('/upload-multiple', upload.array('images', 5), (req, res) => {  console.log('Uploaded files:', req.files);});// Usage with field specification:router.post('/upload-fields', upload.fields([  { name: 'avatar', maxCount: 1 },  { name: 'gallery', maxCount: 8 }]), (req, res) => {  console.log('Files by field:', req.files);});</code></pre>
+
+
 
         
     
 
     
-
-    
-        <h3 class="subsection-title">Type Definitions</h3>
+        <h3 class="subsection-title">Methods</h3>
 
         
-                
-<h4 class="name" id="~UserDocument">UserDocument</h4>
+            
 
+    
+
+    <h4 class="name" id="~filename"><span class="type-signature type-signature-inner">(inner) </span>filename<span class="signature">(req, file, callback)</span><span class="type-signature"></span></h4>
+
+    
 
 
 
@@ -269,13 +263,18 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>User document structure</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Callback function that generates unique filenames by:</p>
+<ol>
+<li>Getting current timestamp using Date.now()</li>
+<li>Prefixing original filename with timestamp</li>
+<li>Using underscore separator between timestamp and original name</li>
+</ol></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_userModel.js.html">models/userModel.js</a>, <a href="models_userModel.js.html#line9">line 9</a>
+        <a href="middlewares_multer.js.html">middlewares/multer.js</a>, <a href="middlewares_multer.js.html#line20">line 20</a>
     </li></ul></dd>
     
 
@@ -312,11 +311,25 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
 
 
 
-    <h5 class="subsection-title">Properties:</h5>
 
+
+
+
+
+
+
+
+    <h5 class="h5-examples">Example</h5>
+    
+    <pre class="prettyprint"><code>// Input file: "background-image.png"// Generated filename: "1640995200000_background-image.png"</code></pre>
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
-<table class="props">
+<table class="params">
     <thead>
     <tr>
         
@@ -325,8 +338,6 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
 
         <th>Type</th>
 
-        
-        <th>Attributes</th>
         
 
         
@@ -340,7 +351,74 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
 
         <tr>
             
-                <td class="name"><code>clerkId</code></td>
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Express request object</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>file</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Express.Multer.File</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Uploaded file information</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>originalname</code></td>
             
 
             <td class="type">
@@ -354,29 +432,30 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last"><p>Unique Clerk authentication ID</p></td>
+            <td class="description last"><p>Original name of uploaded file</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>email</code></td>
+                <td class="name"><code>callback</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">function</span>
 
 
 
@@ -384,155 +463,41 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last"><p>User's email address (unique)</p></td>
-        </tr>
+            <td class="description last"><p>Multer callback function</p>
+                <h6>Properties</h6>
+                
 
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
             
-                <td class="name"><code>photo</code></td>
+                <td class="name"><code>error</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>URL to user's profile photo</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>firstName</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>User's first name (optional)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>lastName</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>User's last name (optional)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>creditBalance</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Current credit balance (default: 5)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>nextCreditAt</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Date</span>
-|
-
 <span class="param-type">null</span>
 
 
@@ -541,29 +506,23 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last"><p>Timestamp when next credit will be added</p></td>
+            <td class="description last"><p>Error parameter (null for success)</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>timerActive</code></td>
+                <td class="name"><code>filename</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
 
 
 
@@ -571,46 +530,17 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last"><p>Whether credit refresh timer is active</p></td>
+            <td class="description last"><p>Generated filename</p></td>
         </tr>
 
     
+    </tbody>
+</table>
 
-        <tr>
-            
-                <td class="name"><code>lastCreditUpdate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Date</span>
-
-
-
-            
             </td>
-
-            
-                <td class="attributes">
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Last time credits were updated</p></td>
         </tr>
 
     
@@ -622,29 +552,22 @@ Defines the structure and validation rules for user documents in MongoDB.</p>
 
 
 
-<div class="description usertext">
-    <p>User document structure</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Object</span>
-
-
-
-        </li>
-    </ul>
 
 
 
 
 
 
-            
+
+
+
+
+
+
+
+        
+    
+
     
 
     
